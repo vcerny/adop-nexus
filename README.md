@@ -103,6 +103,20 @@ Additionally, the image reads the following LDAP environment variables if you wa
  * `USER_AGENT`, if set, you can enable Basic Authentication. [How do I enable WWW-Authenticate headers for content 401 responses]
  (https://support.sonatype.com/hc/en-us/articles/213465078-How-do-I-enable-WWW-Authenticate-headers-for-content-401-responses)
  
+# JMX Monitoring
+It is possible to leverage JMX monitoring of Nexus if so desired. This requires launching Nexus with several JVM options
+wrapped into an env variable INSTALL4J_ADD_VM_PARAMS (https://github.com/sonatype/docker-nexus3/blob/master/README.md#notes)
+Basic authentication is supported.
+
+Default password is adopnexusjmx. This can be changed using an environment variable NEXUS_JMX_PASSWORD.
+
+Example launch with JMX with auth enabled:
+
+      $ docker run -d -p 8081:8081 \
+         --name nexus \
+         -e NEXUS_JMX_PASSWORD="topsecret" \
+         -e INSTALL4J_ADD_VM_PARAMS="-Xms1200m -Xmx1200m -XX:MaxDirectMemorySize=2g -Djava.util.prefs.userRoot=${NEXUS_DATA}/javaprefs -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=15666 -Dcom.sun.management.jmxremote.rmi.port=15666 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=true -Dcom.sun.management.jmxremote.password.file=/resources/jmxremote.password -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost" \
+         accenture/adop-nexus
  
 # License
 Please view [licence information](LICENCE.md) for the software contained on this image.

@@ -24,9 +24,16 @@ ENV LDAP_ENABLED=true \
     LDAP_USER_BASE_DN=ou=people \
     LDAP_USER_REAL_NAME_ATTRIBUTE=cn \
     LDAP_GROUP_MEMBER_FORMAT='${dn}' \
-    NEXUS_CREATE_CUSTOM_ROLES=false
+    NEXUS_CREATE_CUSTOM_ROLES=false \
+    NEXUS_JMX_PASSWORD=adopnexusjmx
 
 USER root
+
+# Install dockerize
+RUN yum install -y wget
+ENV DOCKERIZE_VERSION v0.2.0
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 # Install groovy
 RUN yum install -y zip unzip
@@ -42,6 +49,8 @@ COPY resources/nexus.sh /usr/local/bin/
 COPY resources/provision.sh /usr/local/bin/
 COPY resources/ /resources/
 COPY resources/conf/grapeConfig.xml /root/.groovy/
+# Copy the password file required for JMX monitoring
+COPY resources/jmxremote.password.tmpl /resources/jmxremote.password.tmpl
 
 
 RUN grape install org.sonatype.nexus nexus-rest-client 3.6.0-02 \
