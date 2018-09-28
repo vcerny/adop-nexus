@@ -24,6 +24,7 @@ fi
 
 # Dockerizing jmxpassword file
 dockerize -template /resources/jmxremote.password.tmpl:/resources/jmxremote.password
+chown -R nexus:nexus /resources && chmod 600 /resources/jmxremote.password
 
 echo "Executing provision.sh"
 nohup /usr/local/bin/provision.sh &
