@@ -22,6 +22,10 @@ if [ ! -f ${NEXUS_DATA}/current_local_password ]; then
   echo admin123 > ${NEXUS_DATA}/current_local_password
 fi
 
+# Dockerizing jmxpassword file
+dockerize -template /resources/jmxremote.password.tmpl:/resources/jmxremote.password
+chmod 600 /resources/jmxremote.password
+
 echo "Executing provision.sh"
 nohup /usr/local/bin/provision.sh &
 
